@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="mobile.css">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Senuri 🌸</title>
+
+  <style>
+    :root{
+      --pink:#ff4f8b;
+      --pink2:#ff84b1;
+      --bg1:#fff0f6;
+      --bg2:#ffffff;
+      --text:#1b1b1b;
+      --muted:#6b6b6b;
+      --card:#ffffff;
+      --shadow:0 18px 40px rgba(0,0,0,.12);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui, Segoe UI, Arial;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    .card{
+      width:min(720px,100%);
+      background:var(--card);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .title{
+      margin:0;
+      color:var(--pink);
+      font-size:26px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:6px 0 12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      background:linear-gradient(135deg,#ffe4ef,#ffffff);
+      border:1px solid rgba(255,79,139,.28);
+      border-radius:999px;
+      font-size:12px;
+      color:#333;
+      margin:6px 8px 0 0;
+      user-select:none;
+    }
+    .pill span.dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--pink);
+      box-shadow:0 0 0 3px rgba(255,79,139,.16);
+    }
+    .progress{
+      height:10px;
+      background:#f2f2f2;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--pink),var(--pink2));
+      border-radius:999px;
+      transition:width .35s ease;
+    }
+    .step{
+      display:none;
+      margin-top:14px;
+      animation:fadeIn .25s ease;
+    }
+    .step.active{display:block}
+    @keyframes fadeIn{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+    label{
+      display:block;
+      font-weight:800;
+      margin:12px 0 6px;
+      font-size:13px;
+    }
+    input, select, textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid #ddd;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--pink);
+      box-shadow:0 0 0 3px rgba(255,79,139,.14);
+    }
+    textarea{min-height:80px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > div{flex:1; min-width: 190px;}
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    button{
+      border:none;
+      border-radius:14px;
+      padding:10px 14px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:14px;
+      transition:transform .04s ease, opacity .2s ease;
+    }
+    button:active{transform:scale(.98)}
+    .primary{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;}
+    .ghost{background:#f3f3f3;color:#111;}
+    .danger{background:#111;color:#fff;}
+    .tiny{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:10px;
+      line-height:1.35;
+    }
+
+    /* Result section */
+    .resultBox{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#fff0f6,#ffffff);
+      border:1px dashed rgba(255,79,139,.55);
+    }
+    .score{
+      font-size:40px;
+      font-weight:1000;
+      color:var(--pink);
+      line-height:1;
+    }
+    .planTitle{
+      font-weight:1000;
+      font-size:18px;
+      margin-top:6px;
+    }
+
+    .placeCard{
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.08);
+    }
+    .placeCard .name{font-weight:1000;}
+    .placeCard .meta{font-size:12px;color:#666;margin-top:3px;}
+    .placeCard .why{margin-top:8px;color:#333; line-height:1.45}
+    .placeGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .imgWrap{
+      margin-top:12px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      display:none;
+    }
+    .imgWrap img{width:100%;display:block}
+    .imgCap{
+      padding:10px 12px;
+      font-size:12px;
+      color:#666;
+      border-top:1px solid rgba(0,0,0,.06);
+      background:#fcfcfc;
+    }
+
+    /* Floating hearts */
+    .hearts{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:99;
+      display:none;
+    }
+    .hearts span{
+      position:absolute;
+      bottom:-20px;
+      font-size:18px;
+      animation:floatUp 1.6s linear forwards;
+      opacity:.9;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+    }
+    @keyframes floatUp{
+      to{transform:translateY(-110vh) translateX(var(--dx)) rotate(12deg); opacity:0;}
+    }
+
+    /* Confetti */
+    .confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:100;
+      display:none;
+    }
+    .confetti i{
+      position:absolute;
+      top:-10px;
+      width:10px;height:14px;
+      border-radius:3px;
+      opacity:.9;
+      animation:fall 1.8s linear forwards;
+    }
+    @keyframes fall{
+      to{transform:translateY(110vh) rotate(360deg); opacity:1;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hearts" id="hearts"></div>
+  <div class="confetti" id="confetti"></div>
+
+  <div class="card">
+    <h1 class="title">Hi Senuri 🌸</h1>
+    <p class="sub">
+      I made this little page for you 🙂<br>
+      Answer honestly… and it’ll pick a cute date plan in Sri Lanka.
+    </p>
+
+    <div>
+      <span class="pill"><span class="dot"></span>Interactive</span>
+      <span class="pill"><span class="dot"></span>Fun</span>
+      <span class="pill"><span class="dot"></span>Zero pressure</span>
+    </div>
+
+    <div class="progress"><div class="bar" id="bar"></div></div>
+
+    <!-- STEP 1 -->
+    <div class="step active" id="s1">
+      <label>Your name</label>
+      <input id="herName" value="Senuri" placeholder="Senuri" />
+
+      <label>Your vibe right now</label>
+      <select id="mood">
+        <option value="">Choose…</option>
+        <option value="calm">Calm & chill</option>
+        <option value="fun">Playful / fun</option>
+        <option value="tired">Tired (something easy)</option>
+        <option value="romantic">Soft / romantic</option>
+      </select>
+
+      <div class="actions">
+        <button class="primary" onclick="next(2)">Next</button>
+      </div>
+
+      <div class="tiny">This is just for fun 😊</div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="s2">
+      <div class="row">
+        <div>
+          <label>What do you feel like doing?</label>
+          <select id="activity">
+            <option value="">Choose…</option>
+            <option value="coffee">Coffee & talk</option>
+            <option value="food">Good food</option>
+            <option value="walk">Evening walk + snacks</option>
+            <option value="drive">Long drive + dessert</option>
+            <option value="sunset">Sunset / sea vibe</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Closest area for you</label>
+          <select id="area">
+            <option value="">Choose…</option>
+            <option value="colombo">Colombo</option>
+            <option value="mount">Mount Lavinia / Dehiwala</option>
+            <option value="battaramulla">Battaramulla / Rajagiriya</option>
+            <option value="negombo">Negombo</option>
+            <option value="galle">Galle (if you’re down for a trip)</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Budget mood</label>
+      <select id="budget">
+        <option value="">Choose…</option>
+        <option value="low">Simple & cozy</option>
+        <option value="mid">Nice but not crazy</option>
+        <option value="high">Go fancy ✨</option>
+      </select>
+
+      <div class="actions">
+        <button class="ghost" onclick="prev(1)">Back</button>
+        <button class="primary" onclick="next(3)">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="s3">
+      <div class="row">
+        <div>
+          <label>Your favourite vehicle</label>
+          <select id="herCar">
+            <option value="">Choose…</option>
+            <option value="porsche">Porsche</option>
+            <option value="bmw">BMW</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label>What time works best for you?</label>
+          <select id="timeSlot">
+            <option value="">Choose…</option>
+            <option value="weekday_evening">Weekday evening</option>
+            <option value="weekend_morning">Weekend morning</option>
+            <option value="weekend_evening">Weekend evening</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Your comfort style</label>
+      <select id="style">
+        <option value="">Choose…</option>
+        <option value="quiet">Quiet & private</option>
+        <option value="busy">Busy & lively</option>
+        <option value="outdoor">Outdoor vibe</option>
+      </select>
+
+      <label>Optional: Anything you’re craving?</label>
+      <textarea id="note" placeholder="Example: dessert / sea view / calm place / not crowded..."></textarea>
+
+      <div class="actions">
+        <button class="ghost" onclick="prev(2)">Back</button>
+        <button class="primary" onclick="reveal()">Reveal the plan ✨</button>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="step" id="s4">
+      <div class="resultBox">
+        <div class="score" id="score">—%</div>
+        <div class="planTitle" id="planTitle">Loading…</div>
+        <div id="oneLiner" class="tiny" style="margin-top:8px;"></div>
+
+        <div class="placeGrid" id="places"></div>
+
+        <div class="imgWrap" id="imgWrap">
+          <img id="togetherImg" alt="A cute surprise" />
+          <div class="imgCap">
+            A small surprise 😅
+          </div>
+        </div>
+
+        <div class="actions" style="margin-top:14px;">
+          <button class="primary" onclick="copyAsk()">Copy message</button>
+          <button class="ghost" onclick="restart()">Restart</button>
+          <button class="danger" onclick="sparkHearts()">Cute mode 💗</button>
+        </div>
+      </div>
+
+      <div class="tiny">
+        Tip: After she sees this, you can paste the copied message to her.
+      </div>
+    </div>
+  </div>
+
+<script>
+  /* Hidden truth (NOT displayed). Used only for playful correction logic. */
+  const TRUTH = {
+    herBday: "2001-06-29",
+    herMid:  "nisansa",
+    herCar:  "porsche"
+  };
+
+  /* Progress */
+  let currentStep = 1;
+  const totalSteps = 4;
+
+  function setBar(step){
+    const pct = Math.round(((step-1) / (totalSteps-1)) * 100);
+    document.getElementById("bar").style.width = pct + "%";
+  }
+  setBar(1);
+
+  function show(step){
+    for(let i=1;i<=4;i++){
+      const el = document.getElementById("s"+i);
+      if(el) el.classList.remove("active");
+    }
+    document.getElementById("s"+step).classList.add("active");
+    currentStep = step;
+    setBar(step);
+  }
+  function next(step){
+    const name = (document.getElementById("herName").value||"").trim();
+    if(!name) document.getElementById("herName").value = "Senuri";
+    show(step);
+  }
+  function prev(step){ show(step); }
+
+  /* Real Sri Lanka date spot suggestions (editable list) */
+  const PLACES = {
+    colombo: {
+      coffee: [
+        {name:"Café Kumbuk", area:"Colombo", vibe:"cozy / talk", why:"Warm, casual, and easy for a first date."},
+        {name:"Barefoot Garden Café", area:"Colombo", vibe:"quiet garden", why:"Calm and pretty — good for long talks."},
+        {name:"Java Lounge (any branch)", area:"Colombo", vibe:"safe pick", why:"Simple, comfortable, no pressure."},
+      ],
+      food: [
+        {name:"Park Street Mews", area:"Colombo", vibe:"lively", why:"Feels like a fun mini night-out."},
+        {name:"The Gallery Café", area:"Colombo", vibe:"aesthetic & calm", why:"Pretty place, soft vibes."},
+        {name:"Dutch Hospital area dinner", area:"Colombo", vibe:"date night", why:"Nice lights, nice walk after."},
+      ],
+      walk: [
+        {name:"Galle Face Green", area:"Colombo", vibe:"sea breeze", why:"Snacks + sunset + fun vibe."},
+        {name:"Independence Square", area:"Colombo", vibe:"calm walk", why:"Chill, simple, perfect pace."},
+        {name:"Port City Beach Park", area:"Colombo", vibe:"modern sea-front", why:"Clean sea vibe + photos."},
+      ],
+      drive: [
+        {name:"Marine Drive + dessert stop", area:"Colombo", vibe:"drive + sweet", why:"Easy plan. Music + dessert = win."},
+        {name:"Port City → Galle Face loop", area:"Colombo", vibe:"night lights", why:"Feels romantic without being too much."},
+        {name:"Colombo → Mount beach road", area:"Nearby", vibe:"short trip", why:"A small trip makes it feel special."},
+      ],
+      sunset: [
+        {name:"Galle Face sunset", area:"Colombo", vibe:"classic", why:"One of the easiest best sunsets."},
+        {name:"Port City sunset walk", area:"Colombo", vibe:"calm", why:"Nice view + peaceful walk."},
+        {name:"Dutch Hospital lights + dessert", area:"Colombo", vibe:"soft date", why:"Cute and photogenic."},
+      ]
+    },
+    mount: {
+      coffee: [
+        {name:"Mount Lavinia café by the sea", area:"Mount Lavinia", vibe:"sea-side", why:"Sea vibe makes everything nicer."},
+        {name:"Dehiwala / Mount cozy café", area:"Dehiwala/Mount", vibe:"simple", why:"Chill and comfortable."},
+        {name:"Coffee + beach walk combo", area:"Mount Lavinia", vibe:"cute", why:"Easy plan, good vibe."},
+      ],
+      food: [
+        {name:"Mount Lavinia beach-side dinner", area:"Mount Lavinia", vibe:"romantic", why:"Sea view = instant date vibes."},
+        {name:"Casual dinner around Dehiwala", area:"Dehiwala", vibe:"easy", why:"Comfortable and not too serious."},
+        {name:"Seafood near Mount", area:"Mount Lavinia", vibe:"nice", why:"Good upgrade if you want it."},
+      ],
+      walk: [
+        {name:"Mount Lavinia beach walk", area:"Mount Lavinia", vibe:"sea breeze", why:"Simple, peaceful, and cute."},
+        {name:"Dehiwala coastal stroll", area:"Dehiwala", vibe:"easy", why:"Light walk + chats."},
+        {name:"Snack + beach", area:"Mount/Dehiwala", vibe:"light date", why:"Perfect first-date pace."},
+      ],
+      drive: [
+        {name:"Colombo → Mount road drive + dessert", area:"Mount", vibe:"short drive", why:"Feels like a mini trip."},
+        {name:"Beach road night drive", area:"Mount/Wellawatte", vibe:"lights + sea", why:"Nice views with music."},
+        {name:"Dessert stop after the drive", area:"Colombo/Mount", vibe:"sweet finish", why:"Always a good ending."},
+      ],
+      sunset: [
+        {name:"Mount Lavinia sunset", area:"Mount Lavinia", vibe:"romantic", why:"Sunset + sea = top tier."},
+        {name:"Sea-view spot + ice cream", area:"Mount", vibe:"cute", why:"Simple and memorable."},
+        {name:"Beach + photos", area:"Mount", vibe:"photo moment", why:"Easy to make it special."},
+      ]
+    },
+    battaramulla: {
+      coffee: [
+        {name:"Diyatha Uyana café spots", area:"Battaramulla", vibe:"calm", why:"Walk + coffee combo is perfect."},
+        {name:"Rajagiriya cafés", area:"Rajagiriya", vibe:"easy", why:"Convenient and comfy."},
+        {name:"Coffee + stroll near Diyatha", area:"Battaramulla", vibe:"light", why:"Not too loud, good talk."},
+      ],
+      food: [
+        {name:"Diyatha Uyana food stalls", area:"Battaramulla", vibe:"fun", why:"Casual, playful, low pressure."},
+        {name:"Rajagiriya dining spots", area:"Rajagiriya", vibe:"mid", why:"Nice vibe without being too formal."},
+        {name:"Waterside dinner near Diyatha", area:"Battaramulla", vibe:"soft", why:"Lights + water = cute."},
+      ],
+      walk: [
+        {name:"Diyatha Uyana evening walk", area:"Battaramulla", vibe:"outdoor", why:"Cool air + snacks + chats."},
+        {name:"Waters Edge area stroll", area:"Battaramulla", vibe:"calm", why:"Relaxing and pretty."},
+        {name:"Snack + walk loop", area:"Battaramulla", vibe:"easy", why:"Simple and fun."},
+      ],
+      drive: [
+        {name:"Battaramulla → Colombo loop", area:"Nearby", vibe:"short drive", why:"Easy plan, still date-ish."},
+        {name:"Waterfront drive + dessert", area:"Battaramulla", vibe:"soft", why:"Calm drive, sweet ending."},
+        {name:"Rajagiriya night drive", area:"Rajagiriya", vibe:"lights", why:"Nice city-night vibe."},
+      ],
+      sunset: [
+        {name:"Waters Edge sunset vibe", area:"Battaramulla", vibe:"soft", why:"Pretty view + calm mood."},
+        {name:"Diyatha evening", area:"Battaramulla", vibe:"outdoor", why:"Cool and cozy."},
+        {name:"Dinner by the water", area:"Battaramulla", vibe:"romantic", why:"Easy romantic without pressure."},
+      ]
+    },
+    negombo: {
+      coffee: [
+        {name:"Negombo beach-side café", area:"Negombo", vibe:"sea + chill", why:"Relaxed beach energy."},
+        {name:"Coffee + beach walk", area:"Negombo", vibe:"simple", why:"Easy and cute."},
+        {name:"Dutch Canal area café", area:"Negombo", vibe:"calm", why:"Nice scenery, quiet talk."},
+      ],
+      food: [
+        {name:"Negombo seafood dinner", area:"Negombo", vibe:"date night", why:"Seafood + sea air = solid plan."},
+        {name:"Dinner near the beach", area:"Negombo", vibe:"easy", why:"Not too fancy, still special."},
+        {name:"Canal-side dining", area:"Negombo", vibe:"pretty", why:"Scenic and calm."},
+      ],
+      walk: [
+        {name:"Negombo beach walk", area:"Negombo", vibe:"sunset", why:"Classic and peaceful."},
+        {name:"Snack + sea breeze", area:"Negombo", vibe:"cute", why:"Simple wins."},
+        {name:"Canal-side walk", area:"Negombo", vibe:"calm", why:"Nice conversations."},
+      ],
+      drive: [
+        {name:"Colombo → Negombo mini trip", area:"Negombo", vibe:"trip", why:"Feels like a real outing."},
+        {name:"Beach road drive + dessert", area:"Negombo", vibe:"fun", why:"Best with music."},
+        {name:"Sunset drive", area:"Negombo", vibe:"soft", why:"Nice end-of-day plan."},
+      ],
+      sunset: [
+        {name:"Negombo beach sunset", area:"Negombo", vibe:"romantic", why:"Sunset + sea always works."},
+        {name:"Beach café + sunset", area:"Negombo", vibe:"soft", why:"Comfortable and pretty."},
+        {name:"Dinner after sunset", area:"Negombo", vibe:"date", why:"Perfect sequence."},
+      ]
+    },
+    galle: {
+      coffee: [
+        {name:"Galle Fort café", area:"Galle", vibe:"aesthetic", why:"Feels like a movie scene."},
+        {name:"Coffee + Fort walk", area:"Galle", vibe:"cute", why:"Perfect for strolling & photos."},
+        {name:"Sea-view café in Fort", area:"Galle", vibe:"soft", why:"Chill talk with a view."},
+      ],
+      food: [
+        {name:"Galle Fort dinner", area:"Galle", vibe:"special", why:"A real date-trip feeling."},
+        {name:"Fort street food + dessert", area:"Galle", vibe:"fun", why:"Playful and easy."},
+        {name:"Seafood near Galle", area:"Galle", vibe:"date night", why:"Strong plan if she likes trips."},
+      ],
+      walk: [
+        {name:"Galle Fort sunset walk", area:"Galle", vibe:"romantic", why:"Sunset inside the Fort hits different."},
+        {name:"Fort streets + ice cream", area:"Galle", vibe:"cute", why:"Simple and memorable."},
+        {name:"Fort wall stroll", area:"Galle", vibe:"soft", why:"Great for calm conversations."},
+      ],
+      drive: [
+        {name:"Day trip: Colombo → Galle Fort", area:"Galle", vibe:"trip", why:"A proper outing plan."},
+        {name:"Drive + Fort walk + dinner", area:"Galle", vibe:"full date", why:"Complete package."},
+        {name:"Quick Fort visit + sunset", area:"Galle", vibe:"romantic", why:"Best time to go."},
+      ],
+      sunset: [
+        {name:"Galle Fort sunset", area:"Galle", vibe:"iconic", why:"One of Sri Lanka’s best sunsets."},
+        {name:"Fort wall + photos", area:"Galle", vibe:"photo moment", why:"Perfect moment."},
+        {name:"Dinner after sunset", area:"Galle", vibe:"date", why:"Easy win."},
+      ]
+    }
+  };
+
+  function normalize(s){ return (s||"").trim().toLowerCase(); }
+
+  function scoreEngine(ans){
+    let score = 68;
+    if(ans.mood) score += 6;
+    if(ans.activity) score += 7;
+    if(ans.area) score += 6;
+    if(ans.budget) score += 4;
+    if(ans.timeSlot) score += 4;
+    if(ans.style) score += 3;
+    if(ans.note && ans.note.trim().length > 0) score += 3;
+
+    if(normalize(ans.herCar) === TRUTH.herCar) score += 6;
+    return Math.max(0, Math.min(99, score));
+  }
+
+  function pickPlaces(ans){
+    const areaKey = ans.area || "colombo";
+    const activityKey = ans.activity || "coffee";
+    let pool = (PLACES[areaKey] && PLACES[areaKey][activityKey]) ? PLACES[areaKey][activityKey] : PLACES.colombo.coffee;
+    pool = [...pool];
+
+    // Mood/style weighting (simple, effective)
+    if(ans.mood === "romantic" || ans.style === "quiet"){
+      pool.sort((a,b) => weightRomantic(b) - weightRomantic(a));
+    }
+    if(ans.mood === "fun" || ans.style === "busy"){
+      pool.sort((a,b) => weightFun(b) - weightFun(a));
+    }
+    if(ans.budget === "high"){
+      pool.sort((a,b) => weightFancy(b) - weightFancy(a));
+    }
+
+    return pool.slice(0,3);
+  }
+
+  function weightRomantic(p){
+    const t = (p.vibe + " " + p.why).toLowerCase();
+    return (t.includes("romantic")?3:0) + (t.includes("sea")?2:0) + (t.includes("sunset")?2:0) + (t.includes("calm")?2:0) + (t.includes("quiet")?2:0);
+  }
+  function weightFun(p){
+    const t = (p.vibe + " " + p.why).toLowerCase();
+    return (t.includes("lively")?3:0) + (t.includes("fun")?2:0) + (t.includes("street")?1:0);
+  }
+  function weightFancy(p){
+    const t = (p.vibe + " " + p.why).toLowerCase();
+    return (t.includes("fancy")?3:0) + (t.includes("special")?2:0) + (t.includes("date night")?2:0) + (t.includes("wow")?1:0);
+  }
+
+  function planTitle(ans){
+    const name = (ans.herName || "Senuri").trim();
+    const actText = ({
+      coffee:"Coffee & talk",
+      food:"Food date",
+      walk:"Walk + snacks",
+      drive:"Drive + dessert",
+      sunset:"Sunset vibe"
+    })[ans.activity] || "Coffee & talk";
+
+    const vibeText = ({
+      calm:"calm & chill",
+      fun:"fun & playful",
+      tired:"easy & cozy",
+      romantic:"soft & romantic"
+    })[ans.mood] || "cute";
+
+    return `${name}'s ${vibeText} ${actText} plan ✨`;
+  }
+
+  function popConfetti(){
+    const c = document.getElementById("confetti");
+    c.innerHTML = "";
+    c.style.display = "block";
+    for(let i=0;i<80;i++){
+      const p = document.createElement("i");
+      p.style.left = Math.random()*100 + "vw";
+      p.style.background = `hsl(${Math.random()*360}, 90%, 70%)`;
+      p.style.animationDuration = (1.4 + Math.random()*1.2) + "s";
+      p.style.width = (8 + Math.random()*8) + "px";
+      p.style.height = (10 + Math.random()*10) + "px";
+      c.appendChild(p);
+    }
+    setTimeout(()=>{ c.style.display="none"; }, 1900);
+  }
+
+  function sparkHearts(){
+    const h = document.getElementById("hearts");
+    h.innerHTML = "";
+    h.style.display = "block";
+    const emojis = ["💗","💖","💞","✨","🌸"];
+    for(let i=0;i<30;i++){
+      const s = document.createElement("span");
+      s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      s.style.left = Math.random()*100 + "vw";
+      s.style.setProperty("--dx", (Math.random()*120 - 60) + "px");
+      s.style.animationDuration = (1.2 + Math.random()*1.2) + "s";
+      s.style.fontSize = (16 + Math.random()*14) + "px";
+      s.style.opacity = (0.65 + Math.random()*0.35);
+      h.appendChild(s);
+    }
+    setTimeout(()=>{ h.style.display="none"; }, 1700);
+  }
+
+  async function setTogetherImage(){
+    const imgWrap = document.getElementById("imgWrap");
+    const img = document.getElementById("togetherImg");
+
+    const candidates = [
+      "together.png",
+      "together.png.png",
+      "together.jpg",
+      "together.jpeg"
+    ];
+
+    for (const src of candidates){
+      const ok = await imageExists(src);
+      if(ok){
+        img.src = src;
+        imgWrap.style.display = "block";
+        return;
+      }
+    }
+
+    // Not found => hide cleanly
+    imgWrap.style.display = "none";
+  }
+
+  function imageExists(src){
+    return new Promise((resolve) => {
+      const test = new Image();
+      test.onload = () => resolve(true);
+      test.onerror = () => resolve(false);
+      test.src = src + "?v=" + Date.now();
+    });
+  }
+
+  function reveal(){
+    const ans = {
+      herName: document.getElementById("herName").value,
+      mood: document.getElementById("mood").value,
+      activity: document.getElementById("activity").value,
+      area: document.getElementById("area").value,
+      budget: document.getElementById("budget").value,
+      herCar: document.getElementById("herCar").value,
+      timeSlot: document.getElementById("timeSlot").value,
+      style: document.getElementById("style").value,
+      note: document.getElementById("note").value
+    };
+
+    const score = scoreEngine(ans);
+    document.getElementById("score").textContent = score + "%";
+    document.getElementById("planTitle").textContent = planTitle(ans);
+
+    // One-liner (HER-focused)
+    const note = ans.note && ans.note.trim() ? `You said: “${escapeHtml(ans.note.trim())}”` : "No extra requests — perfect 😄";
+    const carLine = normalize(ans.herCar) && normalize(ans.herCar) !== TRUTH.herCar
+      ? `Fun fact: I’m pretty sure you’re a Porsche person 😉`
+      : (normalize(ans.herCar) === TRUTH.herCar ? `Porsche energy detected ✅` : `Your taste is classy either way 😌`);
+
+    document.getElementById("oneLiner").innerHTML =
+      `• ${note}<br>• ${carLine}`;
+
+    const picks = pickPlaces(ans);
+    const placesEl = document.getElementById("places");
+    placesEl.innerHTML = "";
+
+    const timeText = ({
+      weekday_evening:"Weekday evening",
+      weekend_morning:"Weekend morning",
+      weekend_evening:"Weekend evening"
+    })[ans.timeSlot] || "This week";
+
+    picks.forEach((p, idx) => {
+      const div = document.createElement("div");
+      div.className = "placeCard";
+      div.innerHTML = `
+        <div class="name">${idx===0 ? "Top pick ✅ " : ""}${p.name}</div>
+        <div class="meta">${p.area} • ${p.vibe} • ${timeText}</div>
+        <div class="why"><b>Why this fits you:</b> ${p.why}</div>
+        <div class="why" style="margin-top:6px;"><b>Question:</b> “Would you go here with me?” 🙂</div>
+      `;
+      placesEl.appendChild(div);
+    });
+
+    // image: try to load (works for hosting too)
+    setTogetherImage();
+
+    popConfetti();
+    show(4);
+  }
+
+  function escapeHtml(str){
+    return (str||"").replace(/[&<>"']/g, (m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  function copyAsk(){
+    const name = (document.getElementById("herName").value || "Senuri").trim();
+    const timeText = ({
+      weekday_evening:"one weekday evening",
+      weekend_morning:"a weekend morning",
+      weekend_evening:"a weekend evening"
+    })[document.getElementById("timeSlot").value] || "this week";
+
+    // get top pick again
+    const ans = {
+      herName: name,
+      mood: document.getElementById("mood").value,
+      activity: document.getElementById("activity").value,
+      area: document.getElementById("area").value,
+      budget: document.getElementById("budget").value,
+      herCar: document.getElementById("herCar").value,
+      timeSlot: document.getElementById("timeSlot").value,
+      style: document.getElementById("style").value,
+      note: document.getElementById("note").value
+    };
+    const top = pickPlaces(ans)[0]?.name || "a cozy place";
+
+    const msg =
+`Hey ${name} 😄
+I made a tiny page for you and it picked a date plan…
+
+Top pick: ${top}.
+If you’re free ${timeText}, would you go with me? 🌸`;
+
+    navigator.clipboard.writeText(msg).then(()=>{
+      sparkHearts();
+      alert("Copied ✅ Now paste it to him!!!.");
+    }).catch(()=>{
+      alert("Couldn’t copy automatically. Copy this manually:\n\n" + msg);
+    });
+  }
+
+  function restart(){
+    document.getElementById("mood").value = "";
+    document.getElementById("activity").value = "";
+    document.getElementById("area").value = "";
+    document.getElementById("budget").value = "";
+    document.getElementById("herCar").value = "";
+    document.getElementById("timeSlot").value = "";
+    document.getElementById("style").value = "";
+    document.getElementById("note").value = "";
+    show(1);
+  }
+
+  // init progress bar
+  function init(){ setBar(1); }
+  init();
+</script>
+
+<footer class="site-footer">
+  © <span id="year"></span> Achira Weerasuriya. All rights reserved.
+</footer>
+
+<script>
+  
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
